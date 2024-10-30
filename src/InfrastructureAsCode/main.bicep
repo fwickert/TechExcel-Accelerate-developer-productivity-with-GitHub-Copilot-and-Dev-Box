@@ -13,7 +13,25 @@ var registryName = '${uniqueString(resourceGroup().id)}mpnpreg'
 var registrySku = 'Standard'
 var imageName = 'techexcel/dotnetcoreapp'
 var startupCommand = ''
+var redisCacheName = '${uniqueString(resourceGroup().id)}-mpnp-redis'
+var redisCacheSku = 'Basic'
 
+resource redisCache 'Microsoft.Cache/Redis@2023-08-01' = {
+  name: redisCacheName
+  location: location
+  properties: {
+    sku: {
+      name: redisCacheSku
+      family: 'C'
+      capacity: 0
+    }
+    enableNonSslPort: false
+    minimumTlsVersion: '1.2'
+    redisConfiguration: {
+      'maxmemory-policy': 'volatile-lru'
+    }
+  }
+}
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
   name: logAnalyticsName
@@ -29,18 +47,6 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12
   }
 }
 
-resource redisCache 'Microsoft.Cache/Redis@2020-06-01' = {
-  name: 'myRedisCachefw' // Replace with your Redis cache name
-  location: resourceGroup().location
-  sku: {
-    name: 'Basic'
-    family: 'C'
-    capacity: 0
-  }
-  properties: {
-    enableNonSslPort: false
-  }
-}
 
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
