@@ -29,6 +29,20 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12
   }
 }
 
+resource redisCache 'Microsoft.Cache/Redis@2020-06-01' = {
+  name: 'myRedisCachefw' // Replace with your Redis cache name
+  location: resourceGroup().location
+  sku: {
+    name: 'Basic'
+    family: 'C'
+    capacity: 0
+  }
+  properties: {
+    enableNonSslPort: false
+  }
+}
+
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   name: appInsightsName
   location: location
